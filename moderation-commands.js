@@ -312,6 +312,41 @@
 	}}
 	{{sendMessage 784156505817088020 $embed }}
 {{end}}
+//trigger on command -oneimage
+{{$excname := (joinStr "" (toString .User.String) " (ID " (toString .User.ID) ") ")}}
+{{$avatar := .User.AvatarURL "256" }}
+{{$targetname := (userArg (index .CmdArgs 0))}}
+{{$targetid := ($targetname).ID }}
+{{$targetavatar := ($targetname).AvatarURL "256"}}
+{{if eq (len .Args) 2}}
+	{{giveRoleID (userArg (index .CmdArgs 0)) 852025777897340968}}
+	{{takeRoleID (userArg (index .CmdArgs 0)) 852025777897340968 300}}
+	:frame_photo: Gave temporary image perms to {{index .CmdArgs 0}}!
+	{{$reason := "(No reason specified)"}}
+	{{$embed := cembed 
+		"title" (joinStr "" ":frame_photo: Granted image perms to " $targetname " (ID " $targetid ")") 
+		"description" (joinStr "" ":page_facing_up: Reason: " $reason )
+		"color" 4645612 
+		"author" (sdict "name" $excname "icon_url" $avatar) 
+		"thumbnail" (sdict "url" $targetavatar ) 
+		"footer" (sdict "text" "Duration: 5 Minutes" ) 
+	}}
+	{{ sendMessage 784156505817088020 $embed }}
+{{else}}
+	{{giveRoleID (userArg (index .CmdArgs 0)) 852025777897340968}}
+	{{takeRoleID (userArg (index .CmdArgs 0)) 852025777897340968 300}}
+	:frame_photo: Gave temporary image perms to  {{index .CmdArgs 0}}!
+	{{$reason := (joinStr " " (slice .CmdArgs 1))}}
+	{{$embed := cembed 
+		"title" (joinStr "" ":frame_photo: Granted image perms to " $targetname " (ID " $targetid ")") 
+		"description" (joinStr "" ":page_facing_up: Reason: " $reason )
+		"color" 4645612 
+		"author" (sdict "name" $excname "icon_url" $avatar) 
+		"thumbnail" (sdict "url" $targetavatar ) 
+		"footer" (sdict "text" "Duration: 5 Minutes" ) 
+	}}
+	{{ sendMessage 784156505817088020 $embed }}
+{{end}}
 //trigger on command -approve
 {{$targetname := (userArg (index .CmdArgs 0))}}
 {{$targetid := ($targetname).ID }}
@@ -339,6 +374,13 @@
 {{else}}
 	{{addRoleID 835502264805228552}}
 	<:fedposter:820309521133076490> Added federal agent role.
+{{end}}
+//trigger on -selfmute command
+{{if eq (len .Args) 2}}
+	{{$tspan := (index .CmdArgs 0)}}
+	{{execAdmin "mute" .User $tspan "selfmute" }}
+{{else}}
+	Correct usage of the command: -selfmute <timespan> 
 {{end}}
 //trigger on "." regex (users with federal agent role only)
 {{deleteMessage nil .Message.ID 60}}
